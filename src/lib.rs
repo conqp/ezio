@@ -1,47 +1,28 @@
 use std::fs::File;
-use std::io::{BufReader, Error, Read, Write};
+use std::io::{Error, Read, Write};
 use std::path::Path;
 
 pub trait FileReadable {
-    fn from_reader(reader: &mut impl Read) -> Result<Self, Error>
-    where
-        Self: Sized;
-
-    fn read(file: &Path) -> Result<Self, Error>
-    where
-        Self: Sized,
-    {
-        Self::from_reader(&mut open(file)?)
-    }
+    fn read(file: &Path) -> Result<Self, Error>  where Self: Sized;
 }
 
 pub trait FileWritable {
     fn write(&self, file: &Path) -> Result<(), Error>;
 }
 
-pub fn open(file: &Path) -> Result<BufReader<File>, Error> {
-    Ok(BufReader::new(File::open(file)?))
-}
-
 impl FileReadable for String {
-    fn from_reader(reader: &mut impl Read) -> Result<Self, Error> {
+    fn read(file: &Path) -> Result<Self, Error> {
         let mut content = Self::new();
-
-        match reader.read_to_string(&mut content) {
-            Ok(_) => Ok(content),
-            Err(code) => Err(code),
-        }
+        File::open(file)?.read_to_string(&mut content)?;
+        Ok(content)
     }
 }
 
 impl FileReadable for Vec<u8> {
-    fn from_reader(reader: &mut impl Read) -> Result<Self, Error> {
+    fn read(file: &Path) -> Result<Self, Error> {
         let mut content = Self::new();
-
-        match reader.read_to_end(&mut content) {
-            Ok(_) => Ok(content),
-            Err(code) => Err(code),
-        }
+        File::open(file)?.read_to_end(&mut content)?;
+        Ok(content)
     }
 }
 
