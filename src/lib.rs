@@ -1,5 +1,5 @@
 use std::fs::File;
-use std::io::{BufReader, Error, Read};
+use std::io::{BufReader, Error, Read, Write};
 use std::path::Path;
 
 pub trait FileReadable {
@@ -13,6 +13,10 @@ pub trait FileReadable {
     {
         Self::from_reader(&mut open(file)?)
     }
+}
+
+pub trait FileWritable {
+    fn write(&self, file: &Path) -> Result<(), Error>;
 }
 
 pub fn open(file: &Path) -> Result<BufReader<File>, Error> {
@@ -38,5 +42,17 @@ impl FileReadable for Vec<u8> {
             Ok(_) => Ok(content),
             Err(code) => Err(code),
         }
+    }
+}
+
+impl FileWritable for String {
+    fn write(&self, file: &Path) -> Result<(), Error> {
+        File::open(file)?.write_all(self.as_bytes())
+    }
+}
+
+impl FileWritable for Vec<u8> {
+    fn write(&self, file: &Path) -> Result<(), Error> {
+        File::open(file)?.write_all(self)
     }
 }
