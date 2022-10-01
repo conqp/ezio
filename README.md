@@ -19,6 +19,7 @@ main () {
         Err(msg) => eprintln!("Error reading file: {}", msg),
     }
 }
+```
 
 ## Reading bytes
 Given `~/myfile.txt`:
@@ -37,3 +38,4 @@ main () {
         Err(msg) => eprintln!("Error reading file: {}", msg),
     }
 }
+```
