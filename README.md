@@ -1,5 +1,5 @@
 # Easy file I/O
-This crate provides the traits `FileReadable` and `FileWritable to allow common data types be directly read / written from / to `std::path::Path` objects.
+This crate provides the traits `FileReadable` and `FileWritable` to allow common data types be directly read / written from / to `std::path::Path` objects.
 
 ## Reading
 ### Text
