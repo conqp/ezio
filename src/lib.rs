@@ -2,24 +2,24 @@ use std::fs::File;
 use std::io::{BufReader, Error, Read};
 use std::path::Path;
 
-pub trait Readable {
+pub trait FileReadable {
     fn from_reader(reader: &mut impl Read) -> Result<Self, Error>
     where
         Self: Sized;
-
-    fn open(file: &Path) -> Result<BufReader<File>, Error> {
-        Ok(BufReader::new(File::open(file)?))
-    }
 
     fn read(file: &Path) -> Result<Self, Error>
     where
         Self: Sized,
     {
-        Self::from_reader(&mut Self::open(file)?)
+        Self::from_reader(&mut open(file)?)
     }
 }
 
-impl Readable for String {
+pub fn open(file: &Path) -> Result<BufReader<File>, Error> {
+    Ok(BufReader::new(File::open(file)?))
+}
+
+impl FileReadable for String {
     fn from_reader(reader: &mut impl Read) -> Result<Self, Error> {
         let mut content = Self::new();
 
@@ -30,7 +30,7 @@ impl Readable for String {
     }
 }
 
-impl Readable for Vec<u8> {
+impl FileReadable for Vec<u8> {
     fn from_reader(reader: &mut impl Read) -> Result<Self, Error> {
         let mut content = Self::new();
 
