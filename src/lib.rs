@@ -12,3 +12,14 @@ pub fn read_string(file: &Path) -> Result<String, Error> {
         Err(code) => Err(code),
     }
 }
+
+pub fn read_bytes(file: &Path) -> Result<Vec<u8>, Error> {
+    let fh = File::open(file)?;
+    let mut buf_reader = BufReader::new(fh);
+    let mut content = Vec::new();
+
+    match buf_reader.read_to_end(&mut content) {
+        Ok(_) => Ok(content),
+        Err(code) => Err(code),
+    }
+}
