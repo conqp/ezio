@@ -12,10 +12,7 @@ main () {
     let text_file = Path::new("/my/file.txt");
 
     match String::read(text_file) {
-        Ok(text) => {
-            // text: String
-            println!("My text file contains:\n{}", text)
-        }
+        Ok(text) => println!("My text file contains:\n{}", text),
         Err(msg) => eprintln!("Error reading file: {}", msg),
     }
 }
@@ -33,7 +30,10 @@ main () {
 
     match String::read(binary_file) {
         Ok(bytes) => {  // bytes: Vec<u8>
-            // Do something with bytes.
+            /*
+                Do something with bytes.
+                bytes: Vec<u8>
+            */
         }
         Err(msg) => eprintln!("Error reading file: {}", msg),
     }
