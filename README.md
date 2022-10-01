@@ -2,7 +2,7 @@
 This crate provides a trait `FileReadable` to allow common data types be directly read from `std::path::Path` objects.
 
 ## Reading
-### Test
+### Text
 ```rust
 use std::path::Path;
 
