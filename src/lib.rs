@@ -2,24 +2,41 @@ use std::fs::File;
 use std::io::{BufReader, Error, Read};
 use std::path::Path;
 
-pub fn read_string(file: &Path) -> Result<String, Error> {
-    let fh = File::open(file)?;
-    let mut buf_reader = BufReader::new(fh);
-    let mut content = String::new();
+pub trait Readable {
+    fn from_reader(reader: &mut impl Read) -> Result<Self, Error>
+    where
+        Self: Sized;
 
-    match buf_reader.read_to_string(&mut content) {
-        Ok(_) => Ok(content),
-        Err(code) => Err(code),
+    fn open(file: &Path) -> Result<BufReader<File>, Error> {
+        Ok(BufReader::new(File::open(file)?))
+    }
+
+    fn read(file: &Path) -> Result<Self, Error>
+    where
+        Self: Sized,
+    {
+        Self::from_reader(&mut Self::open(file)?)
     }
 }
 
-pub fn read_bytes(file: &Path) -> Result<Vec<u8>, Error> {
-    let fh = File::open(file)?;
-    let mut buf_reader = BufReader::new(fh);
-    let mut content = Vec::new();
+impl Readable for String {
+    fn from_reader(reader: &mut impl Read) -> Result<Self, Error> {
+        let mut content = Self::new();
 
-    match buf_reader.read_to_end(&mut content) {
-        Ok(_) => Ok(content),
-        Err(code) => Err(code),
+        match reader.read_to_string(&mut content) {
+            Ok(_) => Ok(content),
+            Err(code) => Err(code),
+        }
+    }
+}
+
+impl Readable for Vec<u8> {
+    fn from_reader(reader: &mut impl Read) -> Result<Self, Error> {
+        let mut content = Self::new();
+
+        match reader.read_to_end(&mut content) {
+            Ok(_) => Ok(content),
+            Err(code) => Err(code),
+        }
     }
 }
