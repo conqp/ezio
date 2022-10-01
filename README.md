@@ -1,5 +1,5 @@
 # Easy file I/O
-This crate provides a trait `FileReadable` to allow common data types be directly read from `use std::path::Path` objects.
+This crate provides a trait `FileReadable` to allow common data types be directly read from `std::path::Path` objects.
 
 ## Reading text
 Given `~/myfile.txt`:
