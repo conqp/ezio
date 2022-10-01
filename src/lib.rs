@@ -26,7 +26,7 @@ pub trait FileWritable {
     fn write_to_file(&self, fh: &mut File) -> Result<(), Error>;
 
     fn write(&self, file: &Path) -> Result<(), Error> {
-        self.write_to_file(&mut File::open(file)?)
+        self.write_to_file(&mut File::create(file)?)
     }
 }
 
@@ -49,6 +49,12 @@ impl FileWritable for String {
 }
 
 impl FileWritable for Vec<u8> {
+    fn write_to_file(&self, fh: &mut File) -> Result<(), Error> {
+        fh.write_all(self)
+    }
+}
+
+impl FileWritable for [u8] {
     fn write_to_file(&self, fh: &mut File) -> Result<(), Error> {
         fh.write_all(self)
     }

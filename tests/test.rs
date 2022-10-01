@@ -1,6 +1,5 @@
+use ezio::{FileReadable, FileWritable};
 use std::path::Path;
-
-use ezio::FileReadable;
 
 const BYTES: [u8; 512] = [
     165, 110, 47, 167, 159, 132, 224, 116, 210, 238, 23, 111, 246, 246, 255, 180, 156, 137, 58,
@@ -29,30 +28,51 @@ const BYTES: [u8; 512] = [
     17, 152, 175, 39, 131, 1, 90, 204, 225, 31, 114, 112, 168, 58, 187, 29, 11, 172, 158, 139, 53,
     50, 94, 130, 77, 105, 40, 119, 89, 237, 130, 204, 156, 78, 66, 49, 111, 19, 74, 77, 215, 225,
 ];
+const TEXT_FILE: &str = "tests/textfile.txt";
+const BINARY_FILE: &str = "tests/bytesfile.bin";
+const TEXT: &str = "Hello, world!";
 
 #[test]
 fn read_string() {
-    let text_file = Path::new("tests/textfile.txt");
-
     assert_eq!(
         "Hello, wolrd!",
-        String::read(text_file).unwrap_or("".to_string())
+        String::read(Path::new(TEXT_FILE)).unwrap_or("".to_string())
     );
 }
 
 #[test]
 fn read_string_nsf() {
-    let text_file = Path::new("tests/nosuchfile.txt");
-
-    assert_eq!("-", String::read(text_file).unwrap_or("-".to_string()));
+    assert_eq!(
+        "-",
+        String::read(Path::new("tests/no-such-file")).unwrap_or("-".to_string())
+    );
 }
 
 #[test]
 fn read_bytes() {
-    let bytes_file = Path::new("tests/bytesfile.bin");
-
     assert_eq!(
         Vec::from(BYTES),
-        Vec::read(bytes_file).unwrap_or(Vec::new())
+        Vec::read(Path::new(BINARY_FILE)).unwrap_or(Vec::new())
     );
+}
+
+#[test]
+fn write_string() {
+    let mut file = Path::new("tests/string.wfile");
+    assert_eq!((), String::from(TEXT).write(&mut file).unwrap());
+    assert_eq!(TEXT, String::read(&mut file).unwrap());
+}
+
+#[test]
+fn write_bytes_array() {
+    let mut file = Path::new("tests/bytes-array.wfile");
+    assert_eq!((), BYTES.write(&mut file).unwrap());
+    assert_eq!(Vec::from(BYTES), Vec::read(&mut file).unwrap());
+}
+
+#[test]
+fn write_bytes_vec() {
+    let mut file = Path::new("tests/bytes-vec.wfile");
+    assert_eq!((), Vec::from(BYTES).write(&mut file).unwrap());
+    assert_eq!(Vec::from(BYTES), Vec::read(&mut file).unwrap());
 }

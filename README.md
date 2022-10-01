@@ -1,7 +1,8 @@
 # Easy file I/O
 This crate provides a trait `FileReadable` to allow common data types be directly read from `std::path::Path` objects.
 
-## Reading and writing text
+## Reading
+### Test
 ```rust
 use std::path::Path;
 
@@ -11,19 +12,12 @@ fn main() {
     let text_file = Path::new("my_file.txt");
 
     match String::read(text_file) {
-        Ok(text) => {
-            println!("My text file contains:\n{}", text);
-
-            // Write String to new file
-            let new_file = Path::new("new_file.txt");
-            text.write(new_file);
-        }
+        Ok(text) => println!("My text file contains:\n{}", text),
         Err(msg) => eprintln!("Error reading file: {}", msg),
     }
 }
 ```
-
-## Reading and writing bytes
+### Bytes
 ```rust
 use std::path::Path;
 
@@ -33,17 +27,58 @@ fn main() {
     let binary_file = Path::new("my_file.bin");
 
     match Vec::read(binary_file) {
-        Ok(bytes) => {
-            /*
-                Do something with bytes.
-                bytes: Vec<u8>
-            */
-            
-            // Write bytes to new file
-            let new_file = Path::new("new_file.bin");
-            bytes.write(new_file);
-        }
+        Ok(text) => println!("My text file contains:\n{}", text),
         Err(msg) => eprintln!("Error reading file: {}", msg),
+    }
+}
+```
+## Writing
+### Text
+```rust
+use std::path::Path;
+
+use ezio::FileWritable;
+
+fn main() {
+    let text = String::from("Hello, world!");
+    let text_file = Path::new("my_file.txt");
+
+    match text.write(text_file) {
+        Err(msg) => eprintln!("Error writing file: {}", msg),
+        _ => println!("Text written."),
+    }
+}
+```
+### Bytes
+You can write bytes as `[u8]`
+```rust
+use std::path::Path;
+
+use ezio::FileWritable;
+
+fn main() {
+    let bytes: [u8; 13] = [72, 101, 108, 108, 111, 44, 32, 119, 111, 114, 108, 100, 33];
+    let binary_file = Path::new("my_file.bin");
+
+    match bytes.write(binary_file) {
+        Err(msg) => eprintln!("Error writing file: {}", msg),
+        _ => println!("Text written."),
+    }
+}
+```
+or as `Vec`:
+```rust
+use std::path::Path;
+
+use ezio::FileWritable;
+
+fn main() {
+    let bytes: Vec<u8> = Vec::from([72, 101, 108, 108, 111, 44, 32, 119, 111, 114, 108, 100, 33]);
+    let binary_file = Path::new("my_file.bin");
+
+    match bytes.write(binary_file) {
+        Err(msg) => eprintln!("Error writing file: {}", msg),
+        _ => println!("Text written."),
     }
 }
 ```
