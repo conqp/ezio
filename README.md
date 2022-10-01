@@ -8,7 +8,7 @@ use std::path::Path;
 
 use ezio::FileReadable;
 
-main () {
+fn main() {
     let text_file = Path::new("/my/file.txt");
 
     match String::read(text_file) {
@@ -25,7 +25,7 @@ use std::path::Path;
 
 use ezio::FileReadable;
 
-main () {
+fn main() {
     let binary_file = Path::new("/my/file.bin");
 
     match String::read(binary_file) {
