@@ -27,7 +27,7 @@ fn main() {
     let binary_file = Path::new("/my/file.bin");
 
     match Vec::read(binary_file) {
-        Ok(bytes) => {  // bytes: Vec<u8>
+        Ok(bytes) => {
             /*
                 Do something with bytes.
                 bytes: Vec<u8>
