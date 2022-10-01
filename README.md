@@ -14,6 +14,7 @@ fn main() {
         Ok(text) => {
             println!("My text file contains:\n{}", text);
 
+            // Write String to new file
             let new_file = Path::new("new_file.txt");
             text.write(new_file);
         }
@@ -38,6 +39,7 @@ fn main() {
                 bytes: Vec<u8>
             */
             
+            // Write bytes to new file
             let new_file = Path::new("new_file.bin");
             bytes.write(new_file);
         }
