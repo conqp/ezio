@@ -2,38 +2,54 @@ use std::fs::File;
 use std::io::{Error, Read, Write};
 use std::path::Path;
 
-pub trait FileReadable {
-    fn read(file: &Path) -> Result<Self, Error>  where Self: Sized;
+pub trait FileReadable: Default {
+    fn read_from_file(&mut self, fh: &mut File) -> Result<usize, Error>;
+
+    fn read(file: &Path) -> Result<Self, Error>
+    where
+        Self: Sized,
+    {
+        let mut instance = Self::default();
+
+        match instance.read_from_path(file) {
+            Ok(_) => Ok(instance),
+            Err(err) => Err(err),
+        }
+    }
+
+    fn read_from_path(&mut self, file: &Path) -> Result<usize, Error> {
+        self.read_from_file(&mut File::open(file)?)
+    }
 }
 
 pub trait FileWritable {
-    fn write(&self, file: &Path) -> Result<(), Error>;
+    fn write_to_file(&self, fh: &mut File) -> Result<(), Error>;
+
+    fn write(&self, file: &Path) -> Result<(), Error> {
+        self.write_to_file(&mut File::open(file)?)
+    }
 }
 
 impl FileReadable for String {
-    fn read(file: &Path) -> Result<Self, Error> {
-        let mut content = Self::new();
-        File::open(file)?.read_to_string(&mut content)?;
-        Ok(content)
+    fn read_from_file(&mut self, fh: &mut File) -> Result<usize, Error> {
+        fh.read_to_string(self)
     }
 }
 
 impl FileReadable for Vec<u8> {
-    fn read(file: &Path) -> Result<Self, Error> {
-        let mut content = Self::new();
-        File::open(file)?.read_to_end(&mut content)?;
-        Ok(content)
+    fn read_from_file(&mut self, fh: &mut File) -> Result<usize, Error> {
+        fh.read_to_end(self)
     }
 }
 
 impl FileWritable for String {
-    fn write(&self, file: &Path) -> Result<(), Error> {
-        File::open(file)?.write_all(self.as_bytes())
+    fn write_to_file(&self, fh: &mut File) -> Result<(), Error> {
+        fh.write_all(self.as_bytes())
     }
 }
 
 impl FileWritable for Vec<u8> {
-    fn write(&self, file: &Path) -> Result<(), Error> {
-        File::open(file)?.write_all(self)
+    fn write_to_file(&self, fh: &mut File) -> Result<(), Error> {
+        fh.write_all(self)
     }
 }
