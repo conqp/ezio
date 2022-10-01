@@ -26,7 +26,7 @@ use ezio::FileReadable;
 fn main() {
     let binary_file = Path::new("/my/file.bin");
 
-    match String::read(binary_file) {
+    match Vec::read(binary_file) {
         Ok(bytes) => {  // bytes: Vec<u8>
             /*
                 Do something with bytes.
